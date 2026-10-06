@@ -1,0 +1,14 @@
+---
+// One image slot: a real image, a drawn illustration, or a dashed "Image needed" placeholder.
+import Illustration from './Illustration.astro'
+import type { Media } from '../data/content'
+import { to } from '../lib/paths'
+
+interface Props { m: Media; depth: number; eager?: boolean }
+const { m, depth, eager = false } = Astro.props
+---
+{m.src
+  ? <img src={to(depth, m.src)} alt={m.alt} loading={eager ? 'eager' : 'lazy'} draggable="false" />
+  : m.illustration
+    ? <Illustration name={m.illustration} label={m.alt} />
+    : <div class="placeholder"><span><b>Image needed</b>{m.needed}</span></div>}

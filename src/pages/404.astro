@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro'
+---
+<Base title="Page not found | Mikkel Blom" description="This page does not exist." canonicalPath="/404" depth={0}>
+  <div class="wrap nf">
+    <h1>Page not found</h1>
+    <p>The link might be old, or the project has moved. <a class="textlink" href="/">See all work</a></p>
+  </div>
+</Base>
+
+<style>
+  .nf { padding-block: clamp(48px, 10vw, 120px); display: grid; gap: 16px }
+  h1 { font: 800 clamp(2.4rem, 7vw, 5rem)/1 var(--display); letter-spacing: -0.04em }
+</style>

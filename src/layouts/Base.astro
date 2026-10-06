@@ -1,0 +1,87 @@
+---
+import '@fontsource-variable/schibsted-grotesk'
+import '@fontsource/ibm-plex-sans/400.css'
+import '@fontsource/ibm-plex-sans/500.css'
+import '@fontsource/ibm-plex-sans/600.css'
+import '@fontsource/ibm-plex-mono/400.css'
+import '../styles/global.css'
+import { profile } from '../data/content'
+import { existsSync } from 'node:fs'
+import { to, pageFor } from '../lib/paths'
+
+interface Props {
+  title: string
+  description: string
+  depth?: number
+  active?: 'work' | 'about' | 'contact'
+  canonicalPath: string // e.g. '/', '/about', '/work/buzzboard'
+  image?: string
+}
+const { title, description, depth = 0, active, canonicalPath, image } = Astro.props
+const canonical = new URL(canonicalPath, Astro.site).href
+const ogImage = image ? new URL(image, Astro.site).href : undefined
+const year = new Date().getFullYear()
+const hasCv = existsSync(process.cwd() + '/public' + profile.cv)
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="theme-color" content="#f6f5f1" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  {ogImage && <meta property="og:image" content={ogImage} />}
+  <link rel="icon" href={to(depth, 'favicon.svg')} type="image/svg+xml" />
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Person', name: profile.name, url: 'https://mikkelblom.github.io/',
+    jobTitle: 'Software engineering student', worksFor: { '@type': 'Organization', name: 'Wireframe Studios', url: 'https://wireframestudios.dk' },
+    sameAs: profile.links.map((l) => l.href)
+  })} />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="wrap site-head">
+    <a class="name" href={to(depth, pageFor.home)}>{profile.short}</a>
+    <nav aria-label="Main">
+      <a href={to(depth, pageFor.home)} aria-current={active === 'work' ? 'page' : undefined}>Work</a>
+      <a href={to(depth, pageFor.about)} aria-current={active === 'about' ? 'page' : undefined}>About</a>
+      {hasCv && <a href={to(depth, profile.cv)}>CV</a>}
+      <a href={to(depth, pageFor.contact)} aria-current={active === 'contact' ? 'page' : undefined}>Contact</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="wrap site-foot">
+    <div class="cols">
+      <div>
+        <h2>Get in touch</h2>
+        <p>Private: <span class="mail">{profile.email}</span></p>
+        <p>Work: <span class="mail">{profile.workEmail}</span></p>
+      </div>
+      <div>
+        <h2>Elsewhere</h2>
+        <ul>{profile.links.map((l) => <li><a class="textlink" href={l.href}>{l.label}</a></li>)}</ul>
+      </div>
+      <div>
+        <h2>On this site</h2>
+        <ul>
+          <li><a class="textlink" href={to(depth, pageFor.home)}>All work</a></li>
+          <li><a class="textlink" href={to(depth, pageFor.about)}>About and timeline</a></li>
+          <li><a class="textlink" href={to(depth, pageFor.contact)}>Contact</a></li>
+          {hasCv && <li><a class="textlink" href={to(depth, profile.cv)}>CV (PDF)</a></li>}
+        </ul>
+      </div>
+    </div>
+    <p class="small">{profile.name}, Odense, {year}. No cookies and no tracking on this site.</p>
+  </footer>
+</body>
+</html>

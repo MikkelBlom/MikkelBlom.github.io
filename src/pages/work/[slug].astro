@@ -1,0 +1,164 @@
+---
+import Base from '../../layouts/Base.astro'
+import { projects, type Project } from '../../data/content'
+import { to, pageFor } from '../../lib/paths'
+import MediaView from '../../components/Media.astro'
+
+export function getStaticPaths() {
+  return projects.map((p, i) => ({
+    params: { slug: p.slug },
+    props: { p, next: projects[(i + 1) % projects.length] }
+  }))
+}
+
+interface Props { p: Project; next: Project }
+const { p, next } = Astro.props
+const depth = 1
+import { showTodo, visible } from '../../lib/todo'
+---
+<Base
+  title={`${p.title} | Mikkel Blom`}
+  description={p.summary}
+  canonicalPath={`/work/${p.slug}`}
+  active="work"
+  depth={depth}
+  image={p.cover.src ?? undefined}
+>
+  <article>
+    <header class="wrap head">
+      <a class="back" href={to(depth, pageFor.home)}>All work</a>
+      <h1>{p.title}</h1>
+      <p class="sub">
+        <span>{p.year}</span>
+        <span>{p.kind}</span>
+        {p.status && <span class={`status ${p.live ? 'live' : ''}`}>{p.status}</span>}
+      </p>
+      <p class="summary">{p.summary}</p>
+    </header>
+
+    <div class="wrap">
+      {visible(p.cover) && (
+        <figure class="cover">
+          <MediaView m={p.cover} depth={depth} eager />
+          {p.cover.caption && <figcaption>{p.cover.caption}</figcaption>}
+        </figure>
+      )}
+    </div>
+
+    <div class="wrap body">
+      <aside class="facts" aria-label="Facts">
+        {p.facts.length > 0 && (
+          <dl>{p.facts.map((f) => <div><dt>{f.label}</dt><dd>{f.value}</dd></div>)}</dl>
+        )}
+        {p.stack.length > 0 && (
+          <div class="stack"><h2>Built with</h2><p>{p.stack.join(', ')}</p></div>
+        )}
+        {p.links.length > 0 && (
+          <ul class="links">{p.links.map((l) => <li><a class="textlink" href={l.href}>{l.label}</a></li>)}</ul>
+        )}
+      </aside>
+
+      <div class="sections">
+        {p.sections.length === 0 && showTodo && (
+          <div class="placeholder note"><span><b>Write-up needed</b>Add sections for this project in content.ts (what it was, your part, a picture or video).</span></div>
+        )}
+        {p.sections.map((s) => (
+          <section>
+            <h2>{s.heading}</h2>
+            {s.text?.map((t) => <p>{t}</p>)}
+            {s.list && <ul class="list">{s.list.map((l) => <li>{l}</li>)}</ul>}
+            {s.images && s.images.some(visible) && (
+              <div class={`shots n${Math.min(s.images.filter(visible).length, 2)}`}>
+                {s.images.filter(visible).map((m) => (
+                  <figure>
+                    <MediaView m={m} depth={depth} />
+                    {(m.caption || m.src) && <figcaption>{m.caption ?? m.alt}</figcaption>}
+                  </figure>
+                ))}
+              </div>
+            )}
+            {s.video && visible(s.video) && (
+              <figure class="video">
+                {s.video.youtube ? (
+                  <iframe
+                    src={`https://www.youtube-nocookie.com/embed/${s.video.youtube}`}
+                    title={s.video.title}
+                    loading="lazy"
+                    allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                    allowfullscreen
+                  ></iframe>
+                ) : s.video.file ? (
+                  <video src={to(depth, s.video.file)} controls preload="metadata"></video>
+                ) : (
+                  <div class="placeholder"><span><b>Video needed</b>{s.video.needed}</span></div>
+                )}
+                {s.video.youtube && <figcaption>{s.video.title}. <a class="textlink" href={`https://www.youtube.com/watch?v=${s.video.youtube}`}>Open on YouTube</a></figcaption>}
+              </figure>
+            )}
+          </section>
+        ))}
+      </div>
+    </div>
+
+    <nav class="wrap next" aria-label="Next project">
+      <a href={to(depth, pageFor.project(next.slug))}>
+        <span class="lbl">Next project</span>
+        <span class="t">{next.title}</span>
+      </a>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .head { padding-block: clamp(24px, 5vw, 56px) clamp(28px, 4vw, 44px); display: grid; gap: 14px }
+  .back { font-size: 15px; color: var(--dim); text-decoration: none; width: fit-content }
+  .back::before { content: '\2190'; margin-right: 6px }
+  .back:hover { color: var(--ink) }
+  h1 { font: 800 clamp(2.4rem, 7vw, 5.6rem)/0.98 var(--display); letter-spacing: -0.04em }
+  .sub { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 15px; color: var(--ink-2) }
+  .sub span:first-child { font-family: var(--mono); font-size: 14px }
+  .summary { font-size: clamp(1.1rem, 1.7vw, 1.3rem); line-height: 1.45; max-width: 40rem; margin-top: 6px }
+
+  .cover { margin: 0; display: grid; gap: 8px }
+  .cover :global(img), .cover :global(.ill) { width: 100%; border-radius: 10px; border: 1px solid var(--rule) }
+  .cover :global(.placeholder) { aspect-ratio: 16 / 9 }
+
+  .body { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: clamp(32px, 6vw, 96px); margin-top: clamp(40px, 6vw, 72px); align-items: start }
+  .facts { position: sticky; top: 24px; display: grid; gap: 24px; font-size: 15px }
+  .facts dl { margin: 0; display: grid; gap: 14px }
+  .facts dt { color: var(--dim); font-size: 13px }
+  .facts dd { margin: 2px 0 0; color: var(--ink) }
+  .facts h2 { font: 400 13px/1.4 var(--body); color: var(--dim); margin-bottom: 2px }
+  .facts .links { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px }
+
+  .sections { display: grid; gap: clamp(48px, 6vw, 80px) }
+  .sections section { display: grid; gap: 16px }
+  .sections h2 { font: 700 clamp(1.5rem, 2.6vw, 2rem)/1.15 var(--display); letter-spacing: -0.02em }
+  .sections p, .list { max-width: var(--read); color: var(--ink-2) }
+  .list { margin: 0; padding-left: 1.2em; display: grid; gap: 8px }
+  .list li::marker { color: var(--accent) }
+
+  .shots { display: grid; gap: 16px; margin-top: 8px }
+  .shots.n2 { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .shots figure, .video { margin: 0; display: grid; gap: 8px; min-width: 0 }
+  .shots :global(img), .shots :global(.ill) { width: 100%; border: 1px solid var(--rule); border-radius: 6px; background: var(--paper-2) }
+  figcaption { font-size: 14px; color: var(--dim) }
+  .video { margin-top: 8px }
+  .video iframe, .video video { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 6px; background: var(--ink) }
+  .video .placeholder { aspect-ratio: 16 / 7 }
+  .shots :global(.placeholder) { aspect-ratio: 16 / 7 }
+  .note { aspect-ratio: auto; padding: 32px }
+
+  .next { margin-top: clamp(72px, 10vw, 128px) }
+  .next a { display: grid; gap: 4px; text-decoration: none; border-top: 1px solid var(--ink); padding-top: 16px }
+  .next .lbl { font-size: 14px; color: var(--dim) }
+  .next .t { font: 800 clamp(1.8rem, 4.6vw, 3.6rem)/1 var(--display); letter-spacing: -0.035em; transition: color .15s }
+  .next a:hover .t { color: var(--accent) }
+
+  @media (max-width: 860px) {
+    .body { grid-template-columns: 1fr }
+    .facts { position: static; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding-block: 20px }
+    .facts dl { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)) }
+    .shots.n2 { grid-template-columns: 1fr }
+  }
+</style>

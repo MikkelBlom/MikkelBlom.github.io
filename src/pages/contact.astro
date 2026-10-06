@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro'
+import { profile } from '../data/content'
+
+const depth = 0
+---
+<Base
+  title={`Contact | ${profile.short}`}
+  description={`How to reach ${profile.name}.`}
+  canonicalPath="/contact"
+  active="contact"
+  depth={depth}
+>
+  <div class="wrap page">
+    <h1>Contact</h1>
+    <div class="ways">
+      <div class="way">
+        <h2>Private</h2>
+        <p class="mail">{profile.email}</p>
+        <button type="button" class="copy" data-copy={profile.email}>Copy</button>
+      </div>
+      <div class="way">
+        <h2>Work, through Wireframe Studios</h2>
+        <p class="mail">{profile.workEmail}</p>
+        <button type="button" class="copy" data-copy={profile.workEmail}>Copy</button>
+      </div>
+      <div class="way">
+        <h2>Elsewhere</h2>
+        <ul>{profile.links.map((l) => <li><a class="textlink" href={l.href}>{l.label}</a></li>)}</ul>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40rem); gap: 32px 48px; padding-block: clamp(40px, 8vw, 96px) 0 }
+  h1 { font: 800 clamp(2.4rem, 7vw, 5.6rem)/1 var(--display); letter-spacing: -0.04em }
+  .ways { display: grid; gap: 0 }
+  .way { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; align-items: center; padding-block: 18px; border-bottom: 1px solid var(--rule) }
+  .way:first-child { border-top: 1px solid var(--ink) }
+  .way h2 { grid-column: 1 / -1; font: 400 13px var(--body); color: var(--dim) }
+  .mail { font: 500 clamp(1.1rem, 2.2vw, 1.5rem)/1.3 var(--body); user-select: all; overflow-wrap: anywhere }
+  .copy { font: 600 13px var(--body); background: transparent; color: var(--ink); border: 1px solid var(--ink); border-radius: 999px; padding: 0 16px; min-height: 40px; cursor: pointer }
+  .copy:hover { background: var(--ink); color: var(--paper) }
+  .way ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 20px; flex-wrap: wrap; font-size: 1.05rem }
+  @media (max-width: 760px) { .page { grid-template-columns: 1fr } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.copy').forEach((b) => b.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(b.dataset.copy ?? ''); b.textContent = 'Copied' }
+    catch { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling!); getSelection()?.removeAllRanges(); getSelection()?.addRange(r) }
+    setTimeout(() => (b.textContent = 'Copy'), 1600)
+  }))
+</script>

@@ -1,0 +1,84 @@
+---
+import { existsSync } from 'node:fs'
+import Base from '../layouts/Base.astro'
+import { profile, about, timeline, recommendations } from '../data/content'
+import { to, pageFor } from '../lib/paths'
+
+const depth = 0
+const hasCv = existsSync(process.cwd() + '/public' + profile.cv)
+---
+<Base
+  title={`About | ${profile.short}`}
+  description={`About ${profile.name}: study, work, volunteering and a timeline from 2020 to now.`}
+  canonicalPath="/about"
+  active="about"
+  depth={depth}
+>
+  <div class="wrap page">
+    <header>
+      <h1>About</h1>
+    </header>
+    <div class="text">
+      {about.text.map((t) => <p>{t}</p>)}
+      {hasCv && <p class="cv"><a class="textlink" href={to(depth, profile.cv)}>Download my CV (PDF)</a></p>}
+    </div>
+  </div>
+
+  <section class="wrap" aria-labelledby="rec">
+    <h2 id="rec" class="tl-h">What others say</h2>
+    <div class="recs">
+      {recommendations.map((r) => (
+        <figure class="rec">
+          <blockquote><p>{r.quote}</p></blockquote>
+          <figcaption><strong>{r.name}</strong>, {r.role}, {r.year}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <p class="rec-note">Translated from Danish. The full letters are available on request.</p>
+  </section>
+
+  <section class="wrap" aria-labelledby="tl">
+    <h2 id="tl" class="tl-h">Timeline</h2>
+    <ol class="timeline">
+      {timeline.map((t) => (
+        <li>
+          <span class="when">{t.when}</span>
+          <div>
+            <h3>{t.project ? <a href={to(depth, pageFor.project(t.project))}>{t.title}</a> : t.title}</h3>
+            <p>{t.text}</p>
+            {t.links && <p class="links">{t.links.map((l) => <a class="textlink" href={l.href}>{l.label}</a>)}</p>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+</Base>
+
+<style>
+  .page { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40rem); gap: 24px 48px; padding-block: clamp(40px, 8vw, 96px) clamp(48px, 7vw, 88px) }
+  h1 { font: 800 clamp(2.4rem, 7vw, 5.6rem)/0.98 var(--display); letter-spacing: -0.04em }
+  .text { display: grid; gap: 16px; font-size: 1.1rem; line-height: 1.55; color: var(--ink-2) }
+  .cv { margin-top: 8px }
+
+  .tl-h { font: 700 clamp(1.5rem, 2.6vw, 2rem)/1.15 var(--display); letter-spacing: -0.02em; padding-bottom: 12px; border-bottom: 1px solid var(--ink) }
+  .recs { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 32px }
+  .rec { margin: 0; padding-left: 20px; border-left: 2px solid var(--accent) }
+  .rec blockquote { margin: 0 }
+  .rec blockquote p { font-size: 1.05rem; color: var(--ink); max-width: var(--read) }
+  .rec figcaption { margin-top: 12px; color: var(--ink-2); font-size: 0.9rem }
+  .rec-note { margin: 20px 0 72px; color: var(--ink-2); font-size: 0.85rem }
+  .timeline { list-style: none; margin: 0; padding: 0 }
+  .timeline li { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 24px; padding-block: 18px; border-bottom: 1px solid var(--rule) }
+  .when { font: 400 14px/1.9 var(--mono); color: var(--dim); font-variant-numeric: tabular-nums }
+  .timeline h3 { font: 700 1.2rem/1.3 var(--display); letter-spacing: -0.01em }
+  .timeline h3 a { text-decoration: none }
+  .timeline h3 a::after { content: ' \2192'; color: var(--accent) }
+  .timeline h3 a:hover { color: var(--accent) }
+  .timeline p { color: var(--ink-2); max-width: var(--read); margin-top: 4px }
+  .links { display: flex; gap: 16px; flex-wrap: wrap }
+
+  @media (max-width: 760px) {
+    .page { grid-template-columns: 1fr }
+    .timeline li { grid-template-columns: 1fr; gap: 2px }
+  }
+</style>
