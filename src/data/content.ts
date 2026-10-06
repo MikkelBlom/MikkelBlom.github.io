@@ -230,28 +230,48 @@ export const projects: Project[] = [
     kind: 'Course material from itslearning, made searchable',
     status: 'In development',
     summary:
-      "A desktop app that mirrors a student's courses from itslearning, turns the material into searchable notes and lets an AI assistant answer questions from the actual course content. It is my friend Ziad's project, and I joined in September 2026.",
+      "A desktop app that turns a student's itslearning courses into a searchable knowledge base on their own computer, so an AI assistant can answer questions from the actual course material instead of guessing. Ziad and I are building it together.",
     cover: { src: null, alt: 'StudyFlow', needed: 'Screenshot of the StudyFlow app (Ziad may have one from the Mac version)' },
     facts: [
-      { label: 'Team', value: 'Ziad (lead) and me' },
-      { label: 'My part', value: 'Product strategy and Windows' }
+      { label: 'Team', value: 'Ziad and me' },
+      { label: 'Your data', value: "Stays on the student's computer" },
+      { label: 'itslearning', value: 'Read only, nothing is written back' }
     ],
     stack: ['Rust', 'MCP', 'Tesseract OCR'],
     links: [],
     sections: [
       {
-        heading: 'The idea',
+        heading: 'The problem',
         text: [
-          "Course material on itslearning is spread over files, pages, links and assignments in every course. StudyFlow logs in once with the student's own account, syncs everything down to their own machine and turns it into a small knowledge base per course. The data stays on the student's computer, and nothing is written back to itslearning."
+          'On itslearning, the material for a course is spread over files, pages, links and assignments, and every course is organised a bit differently. Finding the slide where the teacher explained something means clicking through folder after folder. And if you ask a general AI chatbot, it does not know your course, so it answers from somewhere else and sounds just as sure.'
         ]
       },
       {
-        heading: 'What I did',
+        heading: 'The idea',
+        text: [
+          "StudyFlow logs in once with the student's own account and copies everything down to their own machine. From there it builds a small knowledge base for each course: an overview, announcements, deadlines and resources, plus a digest across all courses. An AI assistant can then search that knowledge base and answer from the real material, with a reference to where it came from."
+        ]
+      },
+      {
+        heading: 'How it works',
         list: [
-          'Wrote the product strategy: who it is for, the name, the five things it should be known for, what the AI calls cost in kroner per student, and a three-tier pricing model.',
-          'Turned it into 15 issues on the project board.',
-          'Pushed for designing for the average student, who is not technical, will never open a terminal and keeps notes in Notion or OneNote.',
-          'Ran the app on Windows for the first time and fixed OCR there, so Danish text in images and scanned PDFs can be read on Windows too.'
+          "Login happens once, in the student's own browser, so school logins with SSO and two-factor work. After that it refreshes its own access, so the student never has to log in again.",
+          'Sync mirrors every kind of course element, not just downloads: PDFs, Office documents, spreadsheets, code, zip files, itslearning pages, assignment descriptions and links.',
+          'Text in images and scanned PDFs is read with OCR, including Danish.',
+          'The knowledge base is plain markdown, and it is served to AI assistants over MCP, an open standard for giving an AI access to tools and data.',
+          'Anything written by an AI is labelled as a summary, so it is never mistaken for the course material itself.'
+        ]
+      },
+      {
+        heading: 'Made for the average student',
+        text: [
+          'The first version was a tool for people who are comfortable in a terminal. The goal now is the average student, who will never open a terminal and keeps notes in Notion or OneNote. That shapes the decisions: an app instead of commands, it has to work on both Mac and Windows, and the AI has to be cheap enough per student that it can be offered at a fair price.'
+        ]
+      },
+      {
+        heading: 'Building it together',
+        text: [
+          'StudyFlow is a project between Ziad and me. Ziad has written most of the code so far. I have worked mostly on the product side, like who it is for, what it should cost to run and how it could be priced, and I got it running on Windows.'
         ]
       }
     ]

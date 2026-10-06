@@ -64,8 +64,8 @@ const hasCv = existsSync(process.cwd() + '/public' + profile.cv)
     <div class="cols">
       <div>
         <h2>Get in touch</h2>
-        <p>Private: <span class="mail">{profile.email}</span></p>
-        <p>Work: <span class="mail">{profile.workEmail}</span></p>
+        <p>Private: <a class="mail" href={`mailto:${profile.email}`}>{profile.email}</a></p>
+        <p>Work: <a class="mail" href={`mailto:${profile.workEmail}`}>{profile.workEmail}</a></p>
       </div>
       <div>
         <h2>Elsewhere</h2>
