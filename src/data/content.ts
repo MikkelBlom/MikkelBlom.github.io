@@ -231,7 +231,7 @@ export const projects: Project[] = [
     status: 'In development',
     summary:
       "A desktop app that turns a student's itslearning courses into a searchable knowledge base on their own computer, so an AI assistant can answer questions from the actual course material instead of guessing. Ziad and I are building it together.",
-    cover: { src: null, alt: 'StudyFlow', needed: 'Screenshot of the StudyFlow app (Ziad may have one from the Mac version)' },
+    cover: { src: '/img/studyflow-settings.jpg', alt: 'The StudyFlow settings window on Windows, with the tray panel in front' },
     facts: [
       { label: 'Team', value: 'Ziad and me' },
       { label: 'Your data', value: "Stays on the student's computer" },
@@ -260,7 +260,8 @@ export const projects: Project[] = [
           'Text in images and scanned PDFs is read with OCR, including Danish.',
           'The knowledge base is plain markdown, and it is served to AI assistants over MCP, an open standard for giving an AI access to tools and data.',
           'Anything written by an AI is labelled as a summary, so it is never mistaken for the course material itself.'
-        ]
+        ],
+        images: [{ src: '/img/studyflow-tray.jpg', alt: 'The tray panel with the next deadlines and the exam mode button' }]
       },
       {
         heading: 'Made for the average student',
