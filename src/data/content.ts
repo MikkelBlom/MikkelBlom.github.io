@@ -267,12 +267,6 @@ export const projects: Project[] = [
         text: [
           'The first version was a tool for people who are comfortable in a terminal. The goal now is the average student, who will never open a terminal and keeps notes in Notion or OneNote. That shapes the decisions: an app instead of commands, it has to work on both Mac and Windows, and the AI has to be cheap enough per student that it can be offered at a fair price.'
         ]
-      },
-      {
-        heading: 'Building it together',
-        text: [
-          'StudyFlow is a project between Ziad and me. Ziad has written most of the code so far. I have worked mostly on the product side, like who it is for, what it should cost to run and how it could be priced, and I got it running on Windows.'
-        ]
       }
     ]
   },
