@@ -941,19 +941,43 @@ export const projects: Project[] = [
     cover: { src: '/img/sennep.jpg', alt: 'The S.E.N.N.E.P. robot with big eyes and yellow mecanum wheels' },
     facts: [
       { label: 'Team', value: 'Anders, Astrid, Mikkel, Rasmus and me' },
-      { label: 'Made', value: 'Early 2023, at HTX' },
+      { label: 'Grade', value: '12 (top grade)' },
+      { label: 'Made', value: 'Nov 2022 - Mar 2023, at HTX' },
       { label: 'Size', value: 'About 700 × 450 mm' },
       { label: 'My part', value: 'All the code except the sound detection, and the wheels' }
     ],
     stack: ['Arduino', 'C++', 'Fusion 360', '3D printing', 'Laser cutting'],
-    links: [{ label: 'S.E.N.N.E.P. V2', href: './sennep-v2.html' }],
+    links: [{ label: 'Report (PDF, Danish)', href: '../reports/sennep-robot.pdf' }, { label: 'S.E.N.N.E.P. V2', href: './sennep-v2.html' }],
     sections: [
+      {
+        heading: 'The idea',
+        text: [
+          'Most people agree that kicking a puppy is wrong, but plenty of people have hit a computer that would not work. So where is the line? The project was for the subject Digital Design and Development, in a case about physical interaction design and critical design, where the product is allowed to be more of an art piece than something useful.',
+          'Our question was: how do we make a physical interaction design that explores empathy for robots with human or pet-like traits? The plan was a robot with moods that change depending on how people treat it, and then to see whether people would look after it or bully it.'
+        ]
+      },
+      {
+        heading: 'Cute on purpose',
+        text: [
+          'For people to feel anything for it, it had to be cute, but not human. Things feel cute when they look like babies: a big head, big eyes and a small body. That is why teddy bears look more like children than bears. But if a robot gets too human, it ends up in the uncanny valley and becomes creepy instead. So S.E.N.N.E.P. got a big head, big eyes and a personality like a curious, slightly naive puppy, and nothing more human than that.',
+          'Its "thoughts" were shown as short quotes on the display, so you could read how it felt.'
+        ]
+      },
       {
         heading: 'Building it',
         text: [
-          'It was my in-depth project at HTX. The body was modelled in Fusion 360 and is mostly laser-cut acrylic, and the mecanum wheels were 3D printed, so the robot can drive in every direction without turning. An Arduino controls the motors and the rest of the electronics, and capacitive touch sensors let it react when you touch it.',
+          'It was my in-depth project at HTX. The body was modelled in Fusion 360 and cut in cardboard first, so we could see how the parts fit and try out details, like whether it should have a tail (it did not get one). Then it was laser cut in acrylic. The mecanum wheels were 3D printed, so the robot can drive in every direction without turning.',
           'Not everything survived: an Arduino died along the way because of voltage spikes. That is one of the things V2 is built to avoid.'
-        ]
+        ],
+        images: [{ src: '/img/sennep-cardboard.jpg', alt: 'The cardboard prototype of the body, before it was laser cut in acrylic' }]
+      },
+      {
+        heading: 'Four rounds of wheels',
+        text: [
+          'Nobody in the group had built mecanum wheels before, so the wheels went through four iterations. The first was only a quick print to understand how the wheel works and to find the obvious mistakes, like roller size and width. In the second, a stress analysis (FEA) in Ansys showed that almost all the stress goes into the arms that hold the rollers, so material could be cut away from the hub to save weight.',
+          'In the third, the plain plastic rollers had too little grip, so they got an outer layer of rubber filament. But a whole wheel took more than two days to print and often failed along the way. In the end the focus changed from making the best possible wheel to actually getting a wheel. The fourth version was split in two halves, held together with threaded rods, glue and thread lock, and mounted straight on the motor.'
+        ],
+        images: [{ src: '/img/sennep-fea.jpg', alt: 'Stress analysis of a wheel, showing most of the stress in the roller arms' }]
       },
       {
         heading: 'Early tests',
@@ -969,7 +993,7 @@ export const projects: Project[] = [
         list: [
           'Four microphones, one on each side, so it could tell which direction a sound came from and turn towards it. The sound detection was the part Astrid made.',
           'Four ultrasonic sensors for distance, used by an avoidance system so it did not drive into things.',
-          'Three touch sensors on top, so it reacted when you petted it.',
+          'Three pressure sensors on top, so you could pet it by stroking across them, like petting a dog. They were meant to be home-made capacitive touch sensors, but they sat less than a centimetre apart and disturbed each other, so we swapped them.',
           'An RFID reader, a small display, a speaker, an accelerometer and an SD card.'
         ]
       },
@@ -985,14 +1009,21 @@ export const projects: Project[] = [
         heading: 'Moods',
         text: [
           'The action chooser picks what the robot does next based on its mood: investigate the room, sing, take a nap (with snoring), spin around or ask for attention, each with its own sounds and a word on the display. It also said something on its own every couple of minutes, so it felt a bit alive even when nobody touched it.',
-          'Mikkel from the group made a song for it.'
+          'The sounds were made in FL Studio, with a synth voice inspired by R2-D2. Its passive sounds changed with its mood, and the purr when you petted it was a real cat purr run through distortion and a bitcrusher. Mikkel from the group made a song for it.'
         ],
         video: { title: 'The S.E.N.N.E.P. song, made by Mikkel from the group', file: '/video/sennep-song.mp4' }
       },
       {
+        heading: 'What did not work',
+        text: [
+          'The plan was to keep the mood on a server and show it on a website, so it would survive a power cut and we could follow the robot during a long user test. We ordered an Arduino Mega with built-in WiFi, which took about a month to arrive, and while we waited we tried a separate WiFi module, where we could never tell whether the wiring or the code was wrong. When the board finally came, we struggled to connect it, and then it stopped connecting to every computer. In the end the mood stayed on a normal Arduino Mega.',
+          'Because of the hardware problems, the big user test never happened, so the question in the report was never answered. We only tested smaller things, like how tall the robot should be. Our own evaluation was that the project was too ambitious and that our project management was not good enough, which we tried to do better in the projects after.'
+        ]
+      },
+      {
         heading: 'The report',
         text: [
-          'We had to leave the project while we were in Seattle in February 2023 and finished the report in the spring. Unfortunately I no longer have it.',
+          'The report was handed in on 12 March 2023 and got a 12. It is in Danish and about 95 pages, most of it the robot itself: the wheels, the body, the components and the code.',
           'The name was an accident. Someone asked what we should call the robot, someone else said "SENNEP?" (Danish for mustard), everyone laughed, and it stuck. ChatGPT had only just come out, so we asked it to come up with what the letters could stand for and picked our favourite: an acronym about a robot with feelings that drives around and interacts with people.'
         ],
         images: [
@@ -1312,7 +1343,7 @@ export const timeline: TimelineEntry[] = [
   { when: '2023 - 2024', title: 'Teaching programming', text: 'Hired by schools for introductory programming courses over several days.' },
   { when: 'Mar - Apr 2023', title: 'Territory Takeover', text: 'Board game with RFID for an exam project. Top grade.', project: 'territory-takeover' },
   { when: 'Feb 2023', title: 'Project Gloop, made in Seattle', text: 'Roguelike made by a team of seven on an exchange trip. I built the level generation.', project: 'project-gloop' },
-  { when: 'Jan - Mar 2023', title: 'S.E.N.N.E.P.', text: 'A robot with feelings, on 3D printed mecanum wheels. I wrote all the code except the sound detection.', project: 'sennep-robot' },
+  { when: 'Nov 2022 - Mar 2023', title: 'S.E.N.N.E.P.', text: 'A robot with feelings, on 3D printed mecanum wheels. I wrote all the code except the sound detection. Graded 12.', project: 'sennep-robot' },
   { when: 'Nov 2022', title: 'AR Sandbox', text: 'Kinect and projector on real sand, for the school open house. Top grade.', project: 'ar-sandbox' },
   { when: 'Sep 2022', title: 'Strategalo', text: 'A card game made digital in Unity. I wrote the grid algorithm.', project: 'strategalo' },
   { when: 'Aug 2022', title: 'Escape room at Arresten, Grenå', text: 'Ended up as a public event.', project: 'escape-room-arresten' },
