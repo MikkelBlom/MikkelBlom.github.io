@@ -17,7 +17,7 @@ export type Media = {
 }
 
 // A YouTube id (the part after watch?v=) or a video file in public/ (e.g. '/video/round.mp4').
-export type Video = { title: string; youtube?: string; file?: string; needed?: string }
+export type Video = { title: string; youtube?: string; file?: string; poster?: string; needed?: string } // poster: still shown before a file video plays
 
 export type Section = {
   heading: string
@@ -52,7 +52,7 @@ export const profile = {
   workEmail: 'mikkel@wireframestudios.dk',
   links: [
     { label: 'GitHub', href: 'https://github.com/MikkelBlom' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mikkel-blom-a88667248/' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mikkelblom' },
     { label: 'Wireframe Studios', href: 'https://wireframestudios.dk/en' }
   ] as Link[],
   cv: '/cv.pdf', // put an English CV at public/cv.pdf; the CV links only show up once the file exists
@@ -224,21 +224,21 @@ export const projects: Project[] = [
     ]
   },
   {
-    slug: 'studyflow',
-    title: 'StudyFlow',
+    slug: 'docta',
+    title: 'Docta',
     year: '2026',
-    kind: 'Course material from itslearning, made searchable',
-    status: 'In development',
+    kind: 'Your itslearning courses, searchable for your own AI',
+    status: 'Launching soon',
     summary:
-      "A desktop app that turns a student's itslearning courses into a searchable knowledge base on their own computer, so an AI assistant can answer questions from the actual course material instead of guessing. Ziad and I are building it together.",
-    cover: { src: '/img/studyflow-settings.jpg', alt: 'The StudyFlow settings window on Windows, with the tray panel in front' },
+      "A browser extension, a website and a server that make a student's itslearning courses searchable for the AI they already use, like Claude or Codex. Every answer links back to the file on itslearning, so you can check it. Ziad and I are building it together, and it started out as a desktop app called StudyFlow.",
+    cover: { src: '/img/docta.jpg', alt: 'The Docta homepage: "Your courses, searchable by your AI", with itslearning on the left and an AI answer on the right' },
     facts: [
       { label: 'Team', value: 'Ziad and me' },
-      { label: 'Your data', value: "Stays on the student's computer" },
+      { label: 'Your files', value: 'Turned into text in the browser' },
       { label: 'itslearning', value: 'Read only, nothing is written back' }
     ],
-    stack: ['Rust', 'MCP', 'Tesseract OCR'],
-    links: [],
+    stack: ['TypeScript', 'Rust', 'WebAssembly', 'MCP', 'Tesseract OCR'],
+    links: [{ label: 'docta.dk', href: 'https://docta.dk' }],
     sections: [
       {
         heading: 'The problem',
@@ -249,24 +249,20 @@ export const projects: Project[] = [
       {
         heading: 'The idea',
         text: [
-          "StudyFlow logs in once with the student's own account and copies everything down to their own machine. From there it builds a small knowledge base for each course: an overview, announcements, deadlines and resources, plus a digest across all courses. An AI assistant can then search that knowledge base and answer from the real material, with a reference to where it came from."
-        ]
-      },
-      {
-        heading: 'How it works',
-        list: [
-          "Login happens once, in the student's own browser, so school logins with SSO and two-factor work. After that it refreshes its own access, so the student never has to log in again.",
-          'Sync mirrors every kind of course element, not just downloads: PDFs, Office documents, spreadsheets, code, zip files, itslearning pages, assignment descriptions and links.',
-          'Text in images and scanned PDFs is read with OCR, including Danish.',
-          'The knowledge base is plain markdown, and it is served to AI assistants over MCP, an open standard for giving an AI access to tools and data.',
-          'Anything written by an AI is labelled as a summary, so it is never mistaken for the course material itself.'
+          "The student installs the extension and signs in to itslearning in their own browser. The extension goes through their courses and turns every file into text, and only the text is uploaded to their private library. Then they connect their own AI to the library over MCP (an open standard for giving an AI access to tools and data). The AI searches the library and every search result has the link to the source on itslearning.",
+          'We do not write summaries and there is no chatbot of our own. I think that is the right call for course material: the student gets the text as it stands in the file, and their own AI does the answering.'
         ],
-        images: [{ src: '/img/studyflow-tray.jpg', alt: 'The tray panel with the next deadlines and the exam mode button' }]
+        video: { title: 'The animation from the docta.dk homepage: a question, the search, and the link back to the file on itslearning', file: '/video/docta-hero.mp4', poster: '/img/docta-hero-poster.jpg' }
       },
       {
-        heading: 'Made for the average student',
+        heading: 'The files never leave the browser',
         text: [
-          'The first version was a tool for people who are comfortable in a terminal. The goal now is the average student, who will never open a terminal and keeps notes in Notion or OneNote. That shapes the decisions: an app instead of commands, it has to work on both Mac and Windows, and the AI has to be cheap enough per student that it can be offered at a fair price.'
+          'A big decision was that every file is processed inside the browser. PDFs are read with pdf.js, Word and PowerPoint files are converted by Rust code compiled to WebAssembly, and scanned pages and images with printed text go through OCR (with the Danish language model). Our server only receives the text and the link, never the original file.',
+          "The itslearning login also stays in the extension, so it never reaches our server, not even encrypted. The downside is that it only syncs while the browser is open. Videos and audio are skipped entirely, since lecture recordings are not something we want to store."
+        ],
+        images: [
+          { src: '/img/docta-syncing.jpg', alt: 'The extension popup while it syncs: course 3 of 6, with a progress bar per course' },
+          { src: '/img/docta-synced.jpg', alt: 'The extension popup when everything is synced, with the number of items per course' }
         ]
       }
     ]

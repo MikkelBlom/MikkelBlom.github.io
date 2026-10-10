@@ -88,7 +88,7 @@ import { showTodo, visible } from '../../lib/todo'
                     allowfullscreen
                   ></iframe>
                 ) : s.video.file ? (
-                  <video src={to(depth, s.video.file)} controls preload="metadata"></video>
+                  <video src={to(depth, s.video.file)} poster={s.video.poster && to(depth, s.video.poster)} controls preload="metadata"></video>
                 ) : (
                   <div class="placeholder"><span><b>Video needed</b>{s.video.needed}</span></div>
                 )}
